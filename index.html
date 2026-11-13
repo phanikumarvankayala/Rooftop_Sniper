@@ -2,63 +2,50 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Rooftop Sniper</title>
-<meta name="description" content="A browser sniper game: hold the rooftop, take out enemy snipers, grab health packs. Plays on phone and desktop.">
-<meta name="theme-color" content="#05070c">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Game Zone</title>
+<meta name="description" content="Browser games to play with friends: Rooftop Sniper and Chess Coach. Works on phone and desktop.">
+<meta name="theme-color" content="#0d1a0f">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:Inter,system-ui,sans-serif;color:#fff;background:#0d1a0f}
+body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  background:url('bg.jpg') center 35% / cover no-repeat;
+  padding:24px 20px calc(48px + env(safe-area-inset-bottom))}
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.15) 45%,rgba(4,14,6,.82) 80%,rgba(4,14,6,.95) 100%)}
+@media (min-width:900px){body{justify-content:center;background-position:center 62%}
+  body::before{background:linear-gradient(90deg,rgba(4,14,6,.1) 0%,rgba(4,14,6,.25) 40%,rgba(4,14,6,.85) 100%)}
+  .wrap{margin-left:auto;margin-right:6vw}}
+.wrap{position:relative;z-index:1;width:100%;max-width:400px;text-align:center}
+h1{font-family:Oswald,sans-serif;font-size:44px;letter-spacing:2px;margin:0;line-height:1;text-shadow:0 3px 14px rgba(0,0,0,.6)}
+p{margin:10px 0 26px;color:#d9e6d6;font-size:15px;text-shadow:0 2px 8px rgba(0,0,0,.7)}
+.btns{display:grid;gap:14px}
+.game{display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:18px;text-decoration:none;color:#fff;
+  background:rgba(12,24,14,.55);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .15s,background .15s}
+.game:hover,.game:active{transform:translateY(-2px);background:rgba(20,40,22,.7)}
+.ic{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;font-size:30px;flex:none}
+.sniper .ic{background:linear-gradient(135deg,#ff6b5a,#c4271b)}
+.chess .ic{background:linear-gradient(135deg,#81b64c,#4d7a26);font-size:34px}
+.game span{display:flex;flex-direction:column;text-align:left}
+.game b{font-family:Oswald,sans-serif;font-size:24px;letter-spacing:1px}
+.game small{color:#cfdccc;font-size:13px;margin-top:2px}
+.go{margin-left:auto;font-size:22px;opacity:.8}
+</style>
 </head>
 <body>
-<canvas id="c"></canvas>
-
-<div class="hud" id="hud" hidden>
-  <div class="panel"><div class="lbl">Score</div><div class="score" id="score">0</div><div class="stats"><span id="kills">0 kills</span><span id="heads">0 HS</span><span id="acc">–%</span></div></div>
-  <div class="right">
-    <div class="panel hp"><div class="lbl" id="hpLbl">Health 100</div><div class="bar"><div id="hpBar" style="width:100%"></div></div><div class="stats"><span id="lvlLbl"></span></div></div>
-    <button class="ib" id="muteBtn" aria-label="Sound">🔊</button>
-    <button class="ib" id="pauseBtn" aria-label="Pause">⏸</button>
-  </div>
-</div>
-<div class="ctrls" id="ctrls" hidden>
-  <div class="btn" id="scopeBtn">SCOPE</div>
-  <div class="btn" id="fireBtn">FIRE</div>
-</div>
-<div class="hint" id="hint" hidden></div>
-
-<div class="screen" id="menu">
-  <div class="box">
-    <h1>ROOFTOP <span>SNIPER</span></h1>
-    <p class="tag">You hold the rooftop. Enemy snipers pop up on the buildings across the street, two at a time. Take them out before they take you out.</p>
-    <div class="diffs" id="diffs"></div>
-    <a href="chess.html" style="display:inline-block;margin-top:14px;padding:9px 16px;border-radius:22px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);color:#eef2f7;text-decoration:none;font-size:13.5px;font-weight:600">♞ Also play: Chess Coach</a>
-    <div class="how" id="how"></div>
-    <div class="rot" id="rot" hidden>Tip: turn your phone sideways for a wider view.</div>
-  </div>
-</div>
-
-<div class="screen" id="pause" hidden>
-  <div class="box"><h1>PAUSED</h1><p class="tag" id="pauseInfo"></p><div class="row"><button class="pbtn" id="quitBtn">Quit</button><button class="pbtn pri" id="resumeBtn">Resume</button></div></div>
-</div>
-
-<div class="screen" id="over" hidden>
-  <div class="box">
-    <div class="lbl">Mission over · <span id="ovDiff"></span></div>
-    <div class="big" id="ovScore">0</div>
-    <div class="newbest" id="ovBest"></div>
-    <div class="grid2">
-      <div class="cell"><strong id="ovKills">0</strong><span>Kills</span></div>
-      <div class="cell"><strong id="ovHeads">0</strong><span>Headshots</span></div>
-      <div class="cell"><strong id="ovAcc">0%</strong><span>Accuracy</span></div>
-      <div class="cell"><strong id="ovTime">0:00</strong><span>Survived</span></div>
+  <main class="wrap">
+    <h1>GAME ZONE</h1>
+    <p>Pick a game. Plays on your phone or computer.</p>
+    <div class="btns">
+      <a class="game sniper" href="sniper.html"><div class="ic">🎯</div><span><b>Rooftop Sniper</b><small>Hold the rooftop, take out snipers</small></span><div class="go">›</div></a>
+      <a class="game chess" href="chess.html"><div class="ic">♞</div><span><b>Chess</b><small>Play legends, get coached after</small></span><div class="go">›</div></a>
     </div>
-    <div class="row"><button class="pbtn" id="menuBtn">Change level</button><button class="pbtn pri" id="againBtn">Play again</button></div>
-  </div>
-</div>
-
-<script src="game.js"></script>
+  </main>
 </body>
 </html>

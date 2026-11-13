@@ -2,7 +2,7 @@
 
 A browser sniper game that runs on phones and desktops. You hold a rooftop at dusk while enemy snipers pop up on the buildings across the street, two at a time. Take them out before they take you out.
 
-**▶ Play:** https://phanikumarvankayala.github.io/Rooftop_Sniper/
+**▶ Play:** https://phanikumarvankayala.github.io/Rooftop_Sniper/ (opens the home page, where you pick Rooftop Sniper or Chess)
 
 ## Features
 - Three levels (Easy, Medium, Hard) that change enemy aim speed, damage and scope sway
@@ -29,7 +29,9 @@ Play chess against three training bots or engine opponents styled after 25 world
 
 ## Project structure
 ```
-index.html      Rooftop Sniper: page layout, menus and HUD
+index.html      home page: pick a game
+bg.jpg          home page background photo
+sniper.html     Rooftop Sniper: page layout, menus and HUD
 style.css       Rooftop Sniper styling and mobile layout
 game.js         Rooftop Sniper game logic: city, enemies, scope, scoring, health packs, sound
 chess.html      Chess Coach (self-contained: engine, opponents, post-game review)
