@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Game Zone</title>
-<meta name="description" content="Browser games to play with friends: Rooftop Sniper and Chess Coach. Works on phone and desktop.">
+<meta name="description" content="Browser games to play with friends: Rooftop Sniper, Chess, Glow Maze, Tic-Tac-Toe, Mini Sudoku, Sun &amp; Moon, Crowns and Patchwork.">
 <meta name="theme-color" content="#0d1a0f">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,36 +15,40 @@
 html,body{margin:0;min-height:100%;font-family:Inter,system-ui,sans-serif;color:#fff;background:#0d1a0f}
 body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
   background:url('bg.jpg') center 35% / cover no-repeat;
-  padding:24px 20px calc(48px + env(safe-area-inset-bottom))}
+  padding:24px 14px calc(28px + env(safe-area-inset-bottom))}
 body::before{content:'';position:fixed;inset:0;z-index:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.15) 45%,rgba(4,14,6,.82) 80%,rgba(4,14,6,.95) 100%)}
+  background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.1) 32%,rgba(4,14,6,.85) 58%,rgba(4,14,6,.95) 100%)}
+@media (max-width:899px){body{background:#0d1a0f url('bg.jpg') center top / 100% auto no-repeat}}
 @media (min-width:900px){body{justify-content:center;background-position:center 62%}
   body::before{background:linear-gradient(90deg,rgba(4,14,6,.1) 0%,rgba(4,14,6,.25) 40%,rgba(4,14,6,.85) 100%)}
   .wrap{margin-left:auto;margin-right:6vw}}
-.wrap{position:relative;z-index:1;width:100%;max-width:400px;text-align:center}
+.wrap{position:relative;z-index:1;width:100%;max-width:520px;text-align:center}
 h1{font-family:Oswald,sans-serif;font-size:44px;letter-spacing:2px;margin:0;line-height:1;text-shadow:0 3px 14px rgba(0,0,0,.6)}
 p{margin:10px 0 26px;color:#d9e6d6;font-size:15px;text-shadow:0 2px 8px rgba(0,0,0,.7)}
-.btns{display:grid;gap:14px}
-.game{display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:18px;text-decoration:none;color:#fff;
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.game{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:16px;min-width:0;text-decoration:none;color:#fff;
   background:rgba(12,24,14,.55);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .15s,background .15s}
 .game:hover,.game:active{transform:translateY(-2px);background:rgba(20,40,22,.7)}
-.ic{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;font-size:30px;flex:none}
-.sniper .ic{background:linear-gradient(135deg,#ff6b5a,#c4271b)}
-.chess .ic{background:linear-gradient(135deg,#81b64c,#4d7a26);font-size:34px}
-.game span{display:flex;flex-direction:column;text-align:left}
-.game b{font-family:Oswald,sans-serif;font-size:24px;letter-spacing:1px}
-.game small{color:#cfdccc;font-size:13px;margin-top:2px}
-.go{margin-left:auto;font-size:22px;opacity:.8}
+.ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;flex:none;font-weight:800;letter-spacing:-2px}
+.game span{display:flex;flex-direction:column;text-align:left;min-width:0}
+.game b{font-family:Oswald,sans-serif;font-size:16px;letter-spacing:.3px;line-height:1.15}
+.game small{color:#cfdccc;font-size:11.5px;margin-top:1px;line-height:1.25}
 </style>
 </head>
 <body>
   <main class="wrap">
-    <h1>Tinnama padukunnnama tellarindha</h1>
-    <p>Pick a game(edho okati select chesko)</p>
+    <h1>GAME ZONE</h1>
+    <p>8 games · plays on your phone or computer</p>
     <div class="btns">
-      <a class="game sniper" href="sniper.html"><div class="ic">🎯</div><span><b>Rooftop Sniper</b><small>Hold the rooftop, take out snipers</small></span><div class="go">›</div></a>
-      <a class="game chess" href="chess.html"><div class="ic">♞</div><span><b>Chess</b><small>Play legends, get coached after</small></span><div class="go">›</div></a>
+      <a class="game" href="sniper.html"><div class="ic" style="background:linear-gradient(135deg,#ff6b5a,#c4271b)">🎯</div><span><b>Rooftop Sniper</b><small>Take out enemy snipers</small></span></a>
+      <a class="game" href="chess.html"><div class="ic" style="background:linear-gradient(135deg,#81b64c,#4d7a26)">♞</div><span><b>Chess</b><small>Play legends, get coached</small></span></a>
+      <a class="game" href="glowmaze.html"><div class="ic" style="background:linear-gradient(135deg,#22c55e,#0f766e)">🟢</div><span><b>Glow Maze</b><small>Eat sparks, dodge beetles</small></span></a>
+      <a class="game" href="tictactoe.html"><div class="ic" style="background:linear-gradient(135deg,#7c5cff,#4c1d95)">✕◯</div><span><b>Tic-Tac-Toe</b><small>vs computer or a friend</small></span></a>
+      <a class="game" href="sudoku.html"><div class="ic" style="background:linear-gradient(135deg,#2f9e8f,#115e59)">🔢</div><span><b>Mini Sudoku</b><small>6×6 · hint, clear, reset</small></span></a>
+      <a class="game" href="sunmoon.html"><div class="ic" style="background:linear-gradient(135deg,#f59e0b,#b45309)">☀️</div><span><b>Sun &amp; Moon</b><small>Balance the grid</small></span></a>
+      <a class="game" href="crowns.html"><div class="ic" style="background:linear-gradient(135deg,#a855f7,#6b21a8)">👑</div><span><b>Crowns</b><small>One per row, column, color</small></span></a>
+      <a class="game" href="patchwork.html"><div class="ic" style="background:linear-gradient(135deg,#ec4899,#9d174d)">🧩</div><span><b>Patchwork</b><small>Split into rectangles</small></span></a>
     </div>
   </main>
 </body>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Patchwork · Game Zone</title>
+<meta name="description" content="A rectangle logic puzzle: split the grid into rectangles so each one holds exactly one number equal to its area.">
+<meta name="theme-color" content="#10151d">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#10151d;--panel:#1a212c;--panel2:#232c39;--line:#2f3a4a;--txt:#eef2f7;--mut:#94a3b8;--acc:#ec4899;--good:#3ddc84;--bad:#ff5a5a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,sans-serif}
+body{min-height:100vh;min-height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button{font:inherit;color:inherit;cursor:pointer}
+[hidden]{display:none!important}
+.wrap{max-width:560px;margin:0 auto;padding:10px 12px 28px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.home{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--panel);border:1px solid var(--line);color:var(--txt);text-decoration:none;font-size:18px;flex:none}
+.ttl{flex:1;min-width:0}
+.ttl h1{font-family:Oswald,sans-serif;font-size:24px;letter-spacing:1px;margin:0;line-height:1.1}
+.ttl small{color:var(--mut);font-size:12.5px}
+.pill{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-weight:700;font-variant-numeric:tabular-nums;font-size:14px}
+.seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:3px;gap:3px;margin-bottom:10px}
+.seg button{flex:1;border:0;background:transparent;padding:9px 4px;border-radius:9px;font-weight:600;color:var(--mut);font-size:14px}
+.seg button.on{background:var(--acc);color:#fff}
+.tools{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.tools button,.btn{flex:1;min-width:0;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:12px 6px;font-weight:600;font-size:14px}
+.btn.pri,.tools button.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+button:disabled{opacity:.4}
+.rules{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;color:#cbd5e1;line-height:1.55}
+.rules b{color:var(--txt)}
+.rules ul{margin:6px 0 0;padding-left:18px}
+.msg{min-height:22px;text-align:center;color:var(--mut);font-size:14px;margin-top:8px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px 18px;max-width:340px;width:100%;text-align:center}
+.card h2{font-family:Oswald,sans-serif;font-size:30px;margin:0 0 6px;letter-spacing:1px}
+.card p{color:var(--mut);margin:0 0 16px;line-height:1.5}
+.card .row{display:flex;gap:8px}
+@keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+.card{animation:pop .25s ease-out}
+.bwrap{position:relative;max-width:460px;margin:0 auto;aspect-ratio:1;touch-action:none;user-select:none;-webkit-user-select:none}
+.grid{position:absolute;inset:0;display:grid;border-radius:12px;overflow:hidden;background:#f5f1ea;border:2px solid #d6cfc2}
+.g{border-right:1px dashed #d6cfc2;border-bottom:1px dashed #d6cfc2;display:grid;place-items:center;position:relative}
+.num{width:58%;height:58%;border-radius:50%;background:#fff;border:2px solid #3f3a34;display:grid;place-items:center;font-weight:800;font-size:min(5.4vw,22px);color:#3f3a34;z-index:3;position:relative}
+.num .sh{position:absolute;bottom:-7px;right:-7px;font-size:10px;background:#3f3a34;color:#fff;border-radius:6px;padding:1px 3px;line-height:1.2}
+.rect{position:absolute;border-radius:9px;z-index:2;pointer-events:none;transition:background .15s}
+.rect.ok{border:3px solid rgba(0,0,0,.25)}
+.rect.bad{background:rgba(120,120,120,.18)!important;border:3px dashed #8a8378}
+.sel{position:absolute;border:3px solid #ec4899;background:rgba(236,72,153,.18);border-radius:9px;z-index:4;pointer-events:none}
+.sel span{position:absolute;top:-24px;left:50%;transform:translateX(-50%);background:#ec4899;color:#fff;font-weight:700;font-size:12px;padding:2px 7px;border-radius:8px;white-space:nowrap}
+.solved .rect{animation:shine .8s ease-out both}
+@keyframes shine{40%{filter:brightness(1.25) saturate(1.3)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="home" href="index.html" aria-label="Home">⌂</a><div class="ttl"><h1>Patchwork</h1><small>Split the grid into rectangles</small></div><div class="pill" id="timer">⏱ 0:00</div></div>
+  <div class="seg" id="sizeSeg"><button data-n="5">5×5</button><button data-n="6" class="on">6×6</button><button data-n="7">7×7</button></div>
+  <div class="bwrap" id="bwrap"><div class="grid" id="grid"></div></div>
+  <div class="tools"><button id="hintBtn">💡 Hint</button><button id="undoBtn">↶ Undo</button><button id="clearBtn">🧹 Clear</button><button id="newBtn" class="pri">↻ New</button></div>
+  <div class="msg" id="msg"></div>
+  <div class="rules"><b>How to play:</b> drag from one square to another to draw a rectangle. Tap a rectangle to remove it.
+  <ul><li>Cover the whole grid with rectangles that don't overlap</li><li>Each rectangle holds <b>exactly one number</b>, and that number is how many squares it covers</li><li>A small tag on a number shows its shape: ■ square, ▬ wide, ▮ tall</li><li>Rectangles turn grey with a dashed edge if they break a rule</li></ul></div>
+</div>
+<div class="ov" id="winOv" hidden><div class="card"><h2 id="winT">Solved!</h2><p id="winP"></p><div class="row"><button class="btn" id="winClose">Close</button><button class="btn pri" id="winNext">New game</button></div></div></div>
+<script>
+var $ = function (s) { return document.querySelector(s); };
+function fmt(s) { s = Math.floor(s); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
+function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+var Timer = { t0: 0, acc: 0, run: false, id: 0, el: null,
+  start: function (el) { this.el = el; this.acc = 0; this.t0 = Date.now(); this.run = true; this.tick(); clearInterval(this.id); var s = this; this.id = setInterval(function () { s.tick(); }, 500); },
+  stop: function () { if (this.run) this.acc += (Date.now() - this.t0) / 1000; this.run = false; clearInterval(this.id); this.tick(); return this.acc; },
+  secs: function () { return this.acc + (this.run ? (Date.now() - this.t0) / 1000 : 0); },
+  tick: function () { if (this.el) this.el.textContent = '⏱ ' + fmt(this.secs()); } };
+document.addEventListener('visibilitychange', function () { if (!Timer.el) return; if (document.hidden && Timer.run) { Timer.acc += (Date.now() - Timer.t0) / 1000; Timer.paused = true; Timer.run = false; } else if (!document.hidden && Timer.paused) { Timer.paused = false; Timer.t0 = Date.now(); Timer.run = true; } });
+function showWin(title, text, onNext) { $('#winT').textContent = title; $('#winP').innerHTML = text; $('#winOv').hidden = false; $('#winNext').onclick = function () { $('#winOv').hidden = true; onNext(); }; }
+$('#winClose').onclick = function () { $('#winOv').hidden = true; };
+var PAL = ['#fca5a5', '#fdba74', '#fde047', '#86efac', '#67e8f9', '#93c5fd', '#c4b5fd', '#f0abfc', '#fda4af', '#a7f3d0', '#bef264', '#fcd34d'];
+var S = { n: +(store('pt_n') || 6), rects: [], hist: [], hints: 0, done: false };
+function partition(n) {
+  var cov = Array(n * n).fill(-1), rects = [];
+  for (var i = 0; i < n * n; i++) {
+    if (cov[i] >= 0) continue;
+    var r = Math.floor(i / n), c = i % n, opts = [];
+    for (var h = 1; r + h <= n; h++) for (var w = 1; c + w <= n; w++) {
+      var a = w * h; if (a > Math.max(4, Math.round(n * 1.4)) || (a === 1 && Math.random() < 0.85)) continue;
+      var free = true;
+      for (var y = r; y < r + h && free; y++) for (var x = c; x < c + w; x++) if (cov[y * n + x] >= 0) { free = false; break; }
+      if (free) opts.push([h, w]);
+    }
+    if (!opts.length) opts = [[1, 1]];
+    var pk = opts[Math.floor(Math.random() * opts.length)];
+    for (y = r; y < r + pk[0]; y++) for (x = c; x < c + pk[1]; x++) cov[y * n + x] = rects.length;
+    rects.push({ r: r, c: c, h: pk[0], w: pk[1] });
+  }
+  return rects;
+}
+function candidatesFor(n, clue, clues) {
+  var out = [], a = clue.v;
+  for (var h = 1; h <= a; h++) {
+    if (a % h) continue; var w = a / h; if (h > n || w > n) continue;
+    if (clue.shape === 'sq' && h !== w) continue; if (clue.shape === 'wide' && w <= h) continue; if (clue.shape === 'tall' && h <= w) continue;
+    for (var r = clue.r - h + 1; r <= clue.r; r++) for (var c = clue.c - w + 1; c <= clue.c; c++) {
+      if (r < 0 || c < 0 || r + h > n || c + w > n) continue;
+      var ok = true;
+      for (var k = 0; k < clues.length; k++) { var o = clues[k]; if (o !== clue && o.r >= r && o.r < r + h && o.c >= c && o.c < c + w) { ok = false; break; } }
+      if (ok) out.push({ r: r, c: c, h: h, w: w });
+    }
+  }
+  return out;
+}
+function countSolutions(n, clues, limit) {
+  var cand = clues.map(function (cl) { return candidatesFor(n, cl, clues); });
+  var cov = new Uint8Array(n * n), used = clues.map(function () { return false; }), count = 0, first = null, chosen = [];
+  function fits(q) { for (var y = q.r; y < q.r + q.h; y++) for (var x = q.c; x < q.c + q.w; x++) if (cov[y * n + x]) return false; return true; }
+  function mark(q, v) { for (var y = q.r; y < q.r + q.h; y++) for (var x = q.c; x < q.c + q.w; x++) cov[y * n + x] = v; }
+  (function rec(depth) {
+    if (count >= limit) return;
+    if (depth === clues.length) { count++; if (!first) first = chosen.slice(); return; }
+    // pick the clue with fewest fitting candidates
+    var bi = -1, bl = null;
+    for (var k = 0; k < clues.length; k++) {
+      if (used[k]) continue; var l = cand[k].filter(fits);
+      if (!l.length) return; if (!bl || l.length < bl.length) { bi = k; bl = l; }
+    }
+    used[bi] = true;
+    for (var j = 0; j < bl.length && count < limit; j++) { mark(bl[j], 1); chosen[bi] = bl[j]; rec(depth + 1); mark(bl[j], 0); }
+    used[bi] = false;
+  })(0);
+  return { count: count, sol: first };
+}
+function generate(n) {
+  for (var t = 0; t < 3000; t++) {
+    var rs = partition(n);
+    if (rs.length < n - 1) continue;
+    var clues = rs.map(function (q) {
+      var r = q.r + Math.floor(Math.random() * q.h), c = q.c + Math.floor(Math.random() * q.w), a = q.h * q.w;
+      return { r: r, c: c, v: a, shape: null, rect: q };
+    });
+    var res = countSolutions(n, clues, 2);
+    if (res.count === 1) return { clues: clues };
+    // add shape tags to a few clues to make it unique
+    shuffle(clues.slice()).forEach(function (cl) {
+      if (res.count === 1) return; var q = cl.rect; if (q.h * q.w < 2) return;
+      if (Math.random() < 0.6) { cl.shape = q.h === q.w ? 'sq' : q.w > q.h ? 'wide' : 'tall'; res = countSolutions(n, clues, 2); }
+    });
+    if (res.count === 1) return { clues: clues };
+  }
+}
+var cellsEl = [], selEl = null;
+function newGame() {
+  var n = S.n, g = generate(n); S.clues = g.clues; S.rects = []; S.hist = []; S.hints = 0; S.done = false;
+  var gr = $('#grid'); gr.innerHTML = ''; cellsEl = [];
+  gr.style.gridTemplateColumns = 'repeat(' + n + ',1fr)'; gr.style.gridTemplateRows = 'repeat(' + n + ',1fr)';
+  for (var i = 0; i < n * n; i++) { var d = document.createElement('div'); d.className = 'g'; if ((i % n) === n - 1) d.style.borderRight = '0'; if (i >= n * (n - 1)) d.style.borderBottom = '0'; gr.appendChild(d); cellsEl.push(d); }
+  S.clues.forEach(function (cl) {
+    var e = document.createElement('div'); e.className = 'num';
+    e.innerHTML = cl.v + (cl.shape ? '<span class="sh">' + ({ sq: '■', wide: '▬', tall: '▮' })[cl.shape] + '</span>' : '');
+    cellsEl[cl.r * n + cl.c].appendChild(e);
+  });
+  $('#bwrap').classList.remove('solved'); Timer.start($('#timer')); draw();
+}
+function cellAt(e) {
+  var b = $('#grid').getBoundingClientRect(), n = S.n;
+  var c = Math.floor((e.clientX - b.left) / b.width * n), r = Math.floor((e.clientY - b.top) / b.height * n);
+  return { r: Math.max(0, Math.min(n - 1, r)), c: Math.max(0, Math.min(n - 1, c)) };
+}
+function rectOf(a, b) { return { r: Math.min(a.r, b.r), c: Math.min(a.c, b.c), h: Math.abs(a.r - b.r) + 1, w: Math.abs(a.c - b.c) + 1 }; }
+function overlaps(p, q) { return p.r < q.r + q.h && q.r < p.r + p.h && p.c < q.c + q.w && q.c < p.c + p.w; }
+function rectContaining(cell) { for (var k = 0; k < S.rects.length; k++) { var q = S.rects[k]; if (cell.r >= q.r && cell.r < q.r + q.h && cell.c >= q.c && cell.c < q.c + q.w) return k; } return -1; }
+var drag = null;
+$('#bwrap').addEventListener('pointerdown', function (e) {
+  if (S.done) return; e.preventDefault(); var c = cellAt(e); drag = { a: c, b: c, moved: false };
+  try { $('#bwrap').setPointerCapture(e.pointerId); } catch (err) {} showSel();
+});
+$('#bwrap').addEventListener('pointermove', function (e) {
+  if (!drag) return; var c = cellAt(e); if (c.r !== drag.b.r || c.c !== drag.b.c) { drag.b = c; drag.moved = true; showSel(); }
+});
+function finish() {
+  if (!drag) return; var d = drag; drag = null; showSel();
+  var q = rectOf(d.a, d.b);
+  if (!d.moved) { var k = rectContaining(d.a); if (k >= 0) { S.hist.push(S.rects.slice()); S.rects.splice(k, 1); draw(); return; } }
+  S.hist.push(S.rects.slice());
+  S.rects = S.rects.filter(function (o) { return !overlaps(o, q); }); S.rects.push(q); draw(); check();
+}
+$('#bwrap').addEventListener('pointerup', finish); $('#bwrap').addEventListener('pointercancel', finish);
+function place(el, q) { var n = S.n; el.style.left = 'calc(' + (q.c / n * 100) + '% + 3px)'; el.style.top = 'calc(' + (q.r / n * 100) + '% + 3px)'; el.style.width = 'calc(' + (q.w / n * 100) + '% - 6px)'; el.style.height = 'calc(' + (q.h / n * 100) + '% - 6px)'; }
+function showSel() {
+  if (selEl) { selEl.remove(); selEl = null; }
+  if (!drag) return; var q = rectOf(drag.a, drag.b);
+  selEl = document.createElement('div'); selEl.className = 'sel'; place(selEl, q);
+  selEl.innerHTML = '<span>' + q.w + '×' + q.h + ' = ' + (q.w * q.h) + '</span>';
+  $('#bwrap').appendChild(selEl);
+}
+function rectValid(q) {
+  var inside = S.clues.filter(function (cl) { return cl.r >= q.r && cl.r < q.r + q.h && cl.c >= q.c && cl.c < q.c + q.w; });
+  if (inside.length !== 1) return false; var cl = inside[0];
+  if (cl.v !== q.w * q.h) return false;
+  if (cl.shape === 'sq' && q.w !== q.h) return false; if (cl.shape === 'wide' && q.w <= q.h) return false; if (cl.shape === 'tall' && q.h <= q.w) return false;
+  return cl;
+}
+function draw() {
+  document.querySelectorAll('.rect').forEach(function (e) { e.remove(); });
+  var covered = 0, allOk = true;
+  S.rects.forEach(function (q) {
+    var el = document.createElement('div'), cl = rectValid(q);
+    el.className = 'rect ' + (cl ? 'ok' : 'bad');
+    if (cl) el.style.background = PAL[S.clues.indexOf(cl) % PAL.length]; else allOk = false;
+    place(el, q); $('#bwrap').appendChild(el); covered += q.w * q.h;
+  });
+  var n = S.n;
+  $('#msg').textContent = S.done ? 'Solved!' : covered + ' / ' + (n * n) + ' squares covered' + (!allOk ? ' · grey rectangles break a rule' : '') + (S.hints ? ' · ' + S.hints + ' hint' + (S.hints > 1 ? 's' : '') : '');
+  $('#undoBtn').disabled = !S.hist.length || S.done;
+  document.querySelectorAll('#sizeSeg button').forEach(function (b) { b.classList.toggle('on', +b.dataset.n === S.n); });
+}
+function check() {
+  var n = S.n, area = 0;
+  for (var k = 0; k < S.rects.length; k++) { if (!rectValid(S.rects[k])) return; area += S.rects[k].w * S.rects[k].h; }
+  if (area !== n * n || S.rects.length !== S.clues.length) return;
+  S.done = true; var t = Timer.stop(); draw(); $('#bwrap').classList.add('solved');
+  var key = 'pt_best_' + n, best = store(key), nb = !S.hints && (!best || t < best); if (nb) store(key, t);
+  setTimeout(function () { showWin('Solved! 🧩', n + '×' + n + ' in <b>' + fmt(t) + '</b>' + (S.hints ? ' · ' + S.hints + ' hint' + (S.hints > 1 ? 's' : '') : '') + '<br>' + (nb ? '⭐ New best!' : (store(key) ? 'Best (no hints): ' + fmt(store(key)) : '')), newGame); }, 800);
+}
+$('#hintBtn').onclick = function () {
+  if (S.done) return;
+  var sol = countSolutions(S.n, S.clues, 1).sol;
+  var same = function (p, q) { return p.r === q.r && p.c === q.c && p.w === q.w && p.h === q.h; };
+  var missing = sol.filter(function (q) { return !S.rects.some(function (o) { return same(o, q); }); });
+  if (!missing.length) return;
+  var q = missing[Math.floor(Math.random() * missing.length)];
+  S.hist.push(S.rects.slice()); S.rects = S.rects.filter(function (o) { return !overlaps(o, q); }); S.rects.push({ r: q.r, c: q.c, h: q.h, w: q.w }); S.hints++; draw(); check();
+};
+$('#undoBtn').onclick = function () { var h = S.hist.pop(); if (!h) return; S.rects = h; draw(); };
+$('#clearBtn').onclick = function () { if (S.done) return; S.hist.push(S.rects.slice()); S.rects = []; draw(); };
+$('#newBtn').onclick = newGame;
+document.querySelectorAll('#sizeSeg button').forEach(function (b) { b.onclick = function () { S.n = +b.dataset.n; store('pt_n', S.n); newGame(); }; });
+newGame();
+</script>
+</body>
+</html>

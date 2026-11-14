@@ -14,12 +14,23 @@ A browser sniper game that runs on phones and desktops. You hold a rooftop at du
 - Each level keeps its own best score (saved in your browser)
 - Sound effects are generated in code, so there are no audio files
 
-## ♞ Also on this site: Chess Coach
-**▶ Play:** https://phanikumarvankayala.github.io/Rooftop_Sniper/chess.html
+## 🎮 All games on this site
+Home page: https://phanikumarvankayala.github.io/Rooftop_Sniper/
 
-Play chess against three training bots or engine opponents styled after 25 world champions and legends (Steinitz to Gukesh, Morphy, Judit Polgar and more). Each one plays its own openings and gambits. After every game you get a review: accuracy, blunders and mistakes drawn on the board with arrows, notes on any gambit you faced, and tips on how to improve. It works on phone and desktop, and the engine runs in your browser.
+| Game | File | What it is |
+|---|---|---|
+| 🎯 Rooftop Sniper | `sniper.html` | Sniper shooter with health packs and three levels |
+| ♞ Chess | `chess.html` | Play bots or 25 champion-styled engines, with a post-game coaching review |
+| 🟢 Glow Maze | `glowmaze.html` | Arcade maze chase: eat the sparks, dodge the beetles, power orbs turn the tables |
+| ✕◯ Tic-Tac-Toe | `tictactoe.html` | vs computer (Easy, Medium, Unbeatable) or vs a friend on the same device |
+| 🔢 Mini Sudoku | `sudoku.html` | 6×6 Sudoku with Hint, Clear, Reset, Undo and three difficulty levels |
+| ☀️ Sun & Moon | `sunmoon.html` | Balance suns and moons with = / × clues (binary logic puzzle) |
+| 👑 Crowns | `crowns.html` | One crown per row, column and color region, none touching (6×6 to 8×8) |
+| 🧩 Patchwork | `patchwork.html` | Split the grid into rectangles that match their numbers (5×5 to 7×7) |
 
-## Controls
+Every puzzle is generated fresh with exactly one solution, and best times are saved in your browser.
+
+## Rooftop Sniper controls
 | | Phone | Desktop |
 |---|---|---|
 | Aim | Drag anywhere | Move mouse (push to the screen edge to pan) |
@@ -35,6 +46,12 @@ sniper.html     Rooftop Sniper: page layout, menus and HUD
 style.css       Rooftop Sniper styling and mobile layout
 game.js         Rooftop Sniper game logic: city, enemies, scope, scoring, health packs, sound
 chess.html      Chess Coach (self-contained: engine, opponents, post-game review)
+glowmaze.html   Glow Maze
+tictactoe.html  Tic-Tac-Toe
+sudoku.html     Mini Sudoku
+sunmoon.html    Sun & Moon
+crowns.html     Crowns
+patchwork.html  Patchwork
 favicon.svg     tab icon
 ```
 Plain HTML, CSS and JavaScript with no build step and no dependencies.
